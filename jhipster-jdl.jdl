@@ -1,8 +1,4 @@
-/**
- * JDL para cadastro de Aluno e suas Metas.
- */
-
-// Enum para representar as áreas do ENEM
+// Enum para representar as áreas
 enum AreaDoEnem {
   LINGUAGENS,
   CIENCIAS_HUMANAS,
@@ -10,18 +6,18 @@ enum AreaDoEnem {
   MATEMATICA
 }
 
-// Entidade Aluno
+// Aluno
 entity Aluno {
   nome String required
 }
 
-// Entidade Meta
+// Meta
 entity Meta {
   valor Integer required
   area AreaDoEnem required
 }
 
-// Relacionamento: Um Aluno pode ter muitas Metas
+// Um Aluno pode ter muitas Metas
 relationship OneToMany {
   Aluno{meta} to Meta{aluno}
 }

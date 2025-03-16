@@ -1,0 +1,25 @@
+{
+  "annotations": {
+    "changelogDate": "20250316164848"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "nome",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Aluno",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "meta",
+      "otherEntityRelationshipName": "aluno",
+      "relationshipName": "meta",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no"
+}

@@ -1,0 +1,32 @@
+{
+  "annotations": {
+    "changelogDate": "20250316164849"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "valor",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "area",
+      "fieldType": "AreaDoEnem",
+      "fieldTypeDocumentation": "JDL para cadastro de Aluno e suas Metas.",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "LINGUAGENS,CIENCIAS_HUMANAS,CIENCIAS_NATUREZA,MATEMATICA"
+    }
+  ],
+  "name": "Meta",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "aluno",
+      "otherEntityRelationshipName": "meta",
+      "relationshipName": "aluno",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no"
+}
