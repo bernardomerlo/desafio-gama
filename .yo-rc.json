@@ -1,0 +1,33 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "gamaApp",
+    "buildTool": "maven",
+    "cacheProvider": "ehcache",
+    "clientFramework": "angular",
+    "clientTestFrameworks": [],
+    "clientTheme": "none",
+    "creationTimestamp": 1742142158718,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "enableHibernateCache": false,
+    "enableTranslation": true,
+    "entities": [],
+    "feignClient": null,
+    "jhipsterVersion": "8.9.0",
+    "jwtSecretKey": "YjRkNWEyNzcyYzhhMWFkYmQ0OTA1NmVkNDA4NmM3ZTM2ZDNlZTY2NDk2OWFhODMwMDVmMDU5OTcxZWI2YWVlMmViYmZkOTZlZGY3YzhlZTk5MzU0Nzg4NGY3NjRiNzNmZTNjZWQyN2M0YTc4NjE0MjE4ZDZmMzQzZGEwZDQzZTI=",
+    "languages": ["pt-br"],
+    "microfrontend": null,
+    "microfrontends": [],
+    "nativeLanguage": "pt-br",
+    "packageName": "com.mycompany.myapp",
+    "prodDatabaseType": "postgresql",
+    "reactive": false,
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "syncUserWithIdp": null,
+    "testFrameworks": [],
+    "withAdminUi": true
+  }
+}
