@@ -1,12 +1,18 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.Mentor;
 import com.mycompany.myapp.domain.Meta;
+import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.repository.MentorRepository;
 import com.mycompany.myapp.repository.MetaRepository;
+import com.mycompany.myapp.repository.UserRepository;
+import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -35,14 +42,18 @@ public class MetaResource {
     private static final Logger LOG = LoggerFactory.getLogger(MetaResource.class);
 
     private static final String ENTITY_NAME = "meta";
+    private final UserRepository userRepository;
+    private final MentorRepository mentorRepository;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final MetaRepository metaRepository;
 
-    public MetaResource(MetaRepository metaRepository) {
+    public MetaResource(MetaRepository metaRepository, UserRepository userRepository, MentorRepository mentorRepository) {
         this.metaRepository = metaRepository;
+        this.userRepository = userRepository;
+        this.mentorRepository = mentorRepository;
     }
 
     /**
@@ -67,7 +78,7 @@ public class MetaResource {
     /**
      * {@code PUT  /metas/:id} : Updates an existing meta.
      *
-     * @param id the id of the meta to save.
+     * @param id   the id of the meta to save.
      * @param meta the meta to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated meta,
      * or with status {@code 400 (Bad Request)} if the meta is not valid,
@@ -98,7 +109,7 @@ public class MetaResource {
     /**
      * {@code PATCH  /metas/:id} : Partial updates given fields of an existing meta, field will ignore if it is null
      *
-     * @param id the id of the meta to save.
+     * @param id   the id of the meta to save.
      * @param meta the meta to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated meta,
      * or with status {@code 400 (Bad Request)} if the meta is not valid,
@@ -183,5 +194,20 @@ public class MetaResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/mentor")
+    public List<Meta> findAllByMentor() {
+        Optional<User> currentUser = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin);
+
+        if (currentUser.isPresent()) {
+            User user = currentUser.get();
+            Mentor mentor = mentorRepository.findByUserId(user.getId());
+            if (mentor != null) {
+                return metaRepository.findAllByMentorId(mentor.getId());
+            }
+        }
+
+        return Collections.emptyList();
     }
 }

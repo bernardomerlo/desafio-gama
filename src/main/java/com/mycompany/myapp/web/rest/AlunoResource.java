@@ -1,12 +1,18 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Aluno;
+import com.mycompany.myapp.domain.Mentor;
+import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.AlunoRepository;
+import com.mycompany.myapp.repository.MentorRepository;
+import com.mycompany.myapp.repository.UserRepository;
+import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,14 +41,18 @@ public class AlunoResource {
     private static final Logger LOG = LoggerFactory.getLogger(AlunoResource.class);
 
     private static final String ENTITY_NAME = "aluno";
+    private final UserRepository userRepository;
+    private final MentorRepository mentorRepository;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final AlunoRepository alunoRepository;
 
-    public AlunoResource(AlunoRepository alunoRepository) {
+    public AlunoResource(AlunoRepository alunoRepository, UserRepository userRepository, MentorRepository mentorRepository) {
         this.alunoRepository = alunoRepository;
+        this.userRepository = userRepository;
+        this.mentorRepository = mentorRepository;
     }
 
     /**
@@ -180,5 +190,21 @@ public class AlunoResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/mentor")
+    public List<Aluno> findAllByMentor() {
+        Optional<User> currentUser = SecurityUtils.getCurrentUserLogin().flatMap(userRepository::findOneByLogin);
+
+        if (currentUser.isPresent()) {
+            // Pega o mentor vinculado ao user logado
+            User user = currentUser.get();
+            Mentor mentor = mentorRepository.findByUserId(user.getId());
+            if (mentor != null) {
+                return alunoRepository.findAllByMentorId(mentor.getId());
+            }
+        }
+
+        return Collections.emptyList();
     }
 }

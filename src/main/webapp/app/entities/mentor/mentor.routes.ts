@@ -10,6 +10,7 @@ const mentorRoute: Routes = [
     loadComponent: () => import('./list/mentor.component').then(m => m.MentorComponent),
     data: {
       defaultSort: `id,${ASC}`,
+      authorities: ['ROLE_ADMIN'],
     },
     canActivate: [UserRouteAccessService],
   },
@@ -19,6 +20,9 @@ const mentorRoute: Routes = [
     resolve: {
       mentor: MentorResolve,
     },
+    data: {
+      authorities: ['ROLE_ADMIN'],
+    },
     canActivate: [UserRouteAccessService],
   },
   {
@@ -27,6 +31,9 @@ const mentorRoute: Routes = [
     resolve: {
       mentor: MentorResolve,
     },
+    data: {
+      authorities: ['ROLE_ADMIN'],
+    },
     canActivate: [UserRouteAccessService],
   },
   {
@@ -34,6 +41,9 @@ const mentorRoute: Routes = [
     loadComponent: () => import('./update/mentor-update.component').then(m => m.MentorUpdateComponent),
     resolve: {
       mentor: MentorResolve,
+    },
+    data: {
+      authorities: ['ROLE_ADMIN'],
     },
     canActivate: [UserRouteAccessService],
   },

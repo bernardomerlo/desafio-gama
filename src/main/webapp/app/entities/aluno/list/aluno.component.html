@@ -8,15 +8,17 @@
         <span jhiTranslate="gamaApp.aluno.home.refreshListLabel">Atualizar lista</span>
       </button>
 
-      <button
-        id="jh-create-entity"
-        data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-aluno"
-        [routerLink]="['/aluno/new']"
-      >
-        <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="gamaApp.aluno.home.createLabel">Criar novo Aluno</span>
-      </button>
+      @if (isAdmin) {
+        <button
+          id="jh-create-entity"
+          data-cy="entityCreateButton"
+          class="btn btn-primary jh-create-entity create-aluno"
+          [routerLink]="['/aluno/new']"
+        >
+          <fa-icon icon="plus"></fa-icon>
+          <span jhiTranslate="gamaApp.aluno.home.createLabel">Criar novo Aluno</span>
+        </button>
+      }
     </div>
   </h2>
 

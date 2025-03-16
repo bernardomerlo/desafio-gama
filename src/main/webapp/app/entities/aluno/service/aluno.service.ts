@@ -71,4 +71,8 @@ export class AlunoService {
     }
     return alunoCollection;
   }
+
+  findByMentor(): Observable<HttpResponse<IAluno[]>> {
+    return this.http.get<IAluno[]>(`${this.resourceUrl}/mentor`, { observe: 'response' });
+  }
 }

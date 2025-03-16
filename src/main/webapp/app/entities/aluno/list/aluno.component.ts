@@ -3,6 +3,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { Observable, Subscription, combineLatest, filter, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AccountService } from 'app/core/auth/account.service';
 
 import SharedModule from 'app/shared/shared.module';
 import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
@@ -24,6 +25,7 @@ export class AlunoComponent implements OnInit {
   subscription: Subscription | null = null;
   alunos = signal<IAluno[]>([]);
   isLoading = false;
+  isAdmin = false;
 
   sortState = sortStateSignal({});
 
@@ -37,10 +39,13 @@ export class AlunoComponent implements OnInit {
   protected readonly sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
+  private readonly accountService = inject(AccountService);
 
   trackId = (item: IAluno): number => this.alunoService.getAlunoIdentifier(item);
 
   ngOnInit(): void {
+    this.isAdmin = this.accountService.hasAnyAuthority(['ROLE_ADMIN']);
+    this.load();
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
       .pipe(
         tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
@@ -62,11 +67,23 @@ export class AlunoComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
-    });
+    this.isLoading = true;
+
+    if (this.accountService.hasAnyAuthority(['ROLE_MENTOR'])) {
+      this.alunoService.findByMentor().subscribe({
+        next: res => {
+          this.alunos.set(res.body || []);
+          this.isLoading = false;
+        },
+        error: () => (this.isLoading = false),
+      });
+    } else {
+      this.queryBackend().subscribe({
+        next: (res: EntityArrayResponseType) => {
+          this.onResponseSuccess(res);
+        },
+      });
+    }
   }
 
   navigateToWithComponentValues(event: SortState): void {

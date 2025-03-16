@@ -71,4 +71,8 @@ export class MetaService {
     }
     return metaCollection;
   }
+
+  findByMentor(): Observable<EntityArrayResponseType> {
+    return this.http.get<IMeta[]>(`${this.resourceUrl}/mentor`, { observe: 'response' });
+  }
 }

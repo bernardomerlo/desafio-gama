@@ -8,15 +8,17 @@
         <span jhiTranslate="gamaApp.meta.home.refreshListLabel">Atualizar lista</span>
       </button>
 
-      <button
-        id="jh-create-entity"
-        data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-meta"
-        [routerLink]="['/meta/new']"
-      >
-        <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="gamaApp.meta.home.createLabel">Criar novo Meta</span>
-      </button>
+      @if (isAdmin) {
+        <button
+          id="jh-create-entity"
+          data-cy="entityCreateButton"
+          class="btn btn-primary jh-create-entity create-meta"
+          [routerLink]="['/meta/new']"
+        >
+          <fa-icon icon="plus"></fa-icon>
+          <span jhiTranslate="gamaApp.meta.home.createLabel">Criar nova Meta</span>
+        </button>
+      }
     </div>
   </h2>
 

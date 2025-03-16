@@ -3,7 +3,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { Observable, Subscription, combineLatest, filter, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { AccountService } from 'app/core/auth/account.service';
 import SharedModule from 'app/shared/shared.module';
 import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
 import { ItemCountComponent } from 'app/shared/pagination';
@@ -24,6 +24,7 @@ export class MetaComponent implements OnInit {
   subscription: Subscription | null = null;
   metas = signal<IMeta[]>([]);
   isLoading = false;
+  isAdmin = false;
 
   sortState = sortStateSignal({});
 
@@ -37,7 +38,7 @@ export class MetaComponent implements OnInit {
   protected readonly sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
-
+  private readonly accountService = inject(AccountService);
   trackId = (item: IMeta): number => this.metaService.getMetaIdentifier(item);
 
   ngOnInit(): void {
@@ -62,11 +63,22 @@ export class MetaComponent implements OnInit {
   }
 
   load(): void {
-    this.queryBackend().subscribe({
-      next: (res: EntityArrayResponseType) => {
-        this.onResponseSuccess(res);
-      },
-    });
+    this.isAdmin = this.accountService.hasAnyAuthority(['ROLE_ADMIN']);
+    if (this.accountService.hasAnyAuthority(['ROLE_MENTOR'])) {
+      this.metaService.findByMentor().subscribe({
+        next: res => {
+          this.metas.set(res.body || []);
+          this.isLoading = false;
+        },
+        error: () => (this.isLoading = false),
+      });
+    } else {
+      this.queryBackend().subscribe({
+        next: (res: EntityArrayResponseType) => {
+          this.onResponseSuccess(res);
+        },
+      });
+    }
   }
 
   navigateToWithComponentValues(event: SortState): void {

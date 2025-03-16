@@ -13,6 +13,7 @@ import { AreaDoEnem } from 'app/entities/enumerations/area-do-enem.model';
 import { MetaService } from '../service/meta.service';
 import { IMeta } from '../meta.model';
 import { MetaFormGroup, MetaFormService } from './meta-form.service';
+import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
   selector: 'jhi-meta-update',
@@ -30,7 +31,7 @@ export class MetaUpdateComponent implements OnInit {
   protected metaFormService = inject(MetaFormService);
   protected alunoService = inject(AlunoService);
   protected activatedRoute = inject(ActivatedRoute);
-
+  private readonly accountService = inject(AccountService);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: MetaFormGroup = this.metaFormService.createMetaFormGroup();
 
@@ -88,10 +89,18 @@ export class MetaUpdateComponent implements OnInit {
   }
 
   protected loadRelationshipsOptions(): void {
-    this.alunoService
-      .query()
-      .pipe(map((res: HttpResponse<IAluno[]>) => res.body ?? []))
-      .pipe(map((alunos: IAluno[]) => this.alunoService.addAlunoToCollectionIfMissing<IAluno>(alunos, this.meta?.aluno)))
-      .subscribe((alunos: IAluno[]) => (this.alunosSharedCollection = alunos));
+    if (this.accountService.hasAnyAuthority(['ROLE_MENTOR'])) {
+      this.alunoService
+        .findByMentor()
+        .pipe(map((res: HttpResponse<IAluno[]>) => res.body ?? []))
+        .pipe(map((alunos: IAluno[]) => this.alunoService.addAlunoToCollectionIfMissing<IAluno>(alunos, this.meta?.aluno)))
+        .subscribe((alunos: IAluno[]) => (this.alunosSharedCollection = alunos));
+    } else {
+      this.alunoService
+        .query()
+        .pipe(map((res: HttpResponse<IAluno[]>) => res.body ?? []))
+        .pipe(map((alunos: IAluno[]) => this.alunoService.addAlunoToCollectionIfMissing<IAluno>(alunos, this.meta?.aluno)))
+        .subscribe((alunos: IAluno[]) => (this.alunosSharedCollection = alunos));
+    }
   }
 }

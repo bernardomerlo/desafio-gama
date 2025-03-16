@@ -1,7 +1,12 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.Aluno;
 import com.mycompany.myapp.domain.Mentor;
+import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.repository.AlunoRepository;
 import com.mycompany.myapp.repository.MentorRepository;
+import com.mycompany.myapp.repository.UserRepository;
+import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -35,14 +41,18 @@ public class MentorResource {
     private static final Logger LOG = LoggerFactory.getLogger(MentorResource.class);
 
     private static final String ENTITY_NAME = "mentor";
+    private final UserRepository userRepository;
+    private final AlunoRepository alunoRepository;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
     private final MentorRepository mentorRepository;
 
-    public MentorResource(MentorRepository mentorRepository) {
+    public MentorResource(MentorRepository mentorRepository, UserRepository userRepository, AlunoRepository alunoRepository) {
         this.mentorRepository = mentorRepository;
+        this.userRepository = userRepository;
+        this.alunoRepository = alunoRepository;
     }
 
     /**
@@ -185,5 +195,21 @@ public class MentorResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/mentores/meus-alunos")
+    @PreAuthorize("hasAuthority('ROLE_MENTOR')")
+    public ResponseEntity<List<Aluno>> getAlunosDoMentor() {
+        // Obtém o usuário logado
+        String login = SecurityUtils.getCurrentUserLogin().orElseThrow(() -> new RuntimeException("Usuário não autenticado"));
+
+        // Recupera o mentor associado ao usuário logado
+        User currentUser = userRepository.findOneByLogin(login).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        Mentor mentor = mentorRepository.findByUserId(currentUser.getId());
+        if (mentor == null) {
+            return ResponseEntity.notFound().build();
+        }
+        List<Aluno> alunos = alunoRepository.findAllByMentorId(mentor.getId());
+        return ResponseEntity.ok(alunos);
     }
 }
