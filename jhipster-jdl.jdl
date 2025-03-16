@@ -17,11 +17,19 @@ entity Meta {
   area AreaDoEnem required
 }
 
+entity Mentor{
+  nome String required
+}
+
 // Um Aluno pode ter muitas Metas
 relationship OneToMany {
   Aluno{meta} to Meta{aluno}
 }
 
+relationship OneToMany {
+  Mentor{aluno} to Aluno{mentor}
+}
 // Opções gerais
 paginate Aluno with pagination
 paginate Meta with pagination
+paginate Mentor with pagination

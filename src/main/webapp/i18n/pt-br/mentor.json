@@ -1,0 +1,25 @@
+{
+  "gamaApp": {
+    "mentor": {
+      "home": {
+        "title": "Mentors",
+        "refreshListLabel": "Atualizar lista",
+        "createLabel": "Criar novo Mentor",
+        "createOrEditLabel": "Criar ou editar Mentor",
+        "notFound": "Nenhum Mentor encontrado"
+      },
+      "created": "Um novo Mentor foi criado com o identificador {{ param }}",
+      "updated": "Um Mentor foi atualizado com o identificador {{ param }}",
+      "deleted": "Um Mentor foi excluído com o identificador {{ param }}",
+      "delete": {
+        "question": "Tem certeza de que deseja excluir Mentor {{ id }}?"
+      },
+      "detail": {
+        "title": "Mentor"
+      },
+      "id": "ID",
+      "nome": "Nome",
+      "aluno": "Aluno"
+    }
+  }
+}

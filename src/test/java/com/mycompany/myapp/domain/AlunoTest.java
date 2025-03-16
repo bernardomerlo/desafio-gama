@@ -1,6 +1,7 @@
 package com.mycompany.myapp.domain;
 
 import static com.mycompany.myapp.domain.AlunoTestSamples.*;
+import static com.mycompany.myapp.domain.MentorTestSamples.*;
 import static com.mycompany.myapp.domain.MetaTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,5 +46,17 @@ class AlunoTest {
         aluno.setMetas(new HashSet<>());
         assertThat(aluno.getMetas()).doesNotContain(metaBack);
         assertThat(metaBack.getAluno()).isNull();
+    }
+
+    @Test
+    void mentorTest() {
+        Aluno aluno = getAlunoRandomSampleGenerator();
+        Mentor mentorBack = getMentorRandomSampleGenerator();
+
+        aluno.setMentor(mentorBack);
+        assertThat(aluno.getMentor()).isEqualTo(mentorBack);
+
+        aluno.mentor(null);
+        assertThat(aluno.getMentor()).isNull();
     }
 }

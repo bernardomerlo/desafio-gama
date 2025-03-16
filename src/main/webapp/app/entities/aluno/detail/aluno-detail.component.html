@@ -19,6 +19,14 @@
           <dd>
             <span>{{ alunoRef.nome }}</span>
           </dd>
+          <dt><span jhiTranslate="gamaApp.aluno.mentor">Mentor</span></dt>
+          <dd>
+            @if (aluno()!.mentor) {
+              <div>
+                <a [routerLink]="['/mentor', aluno()!.mentor?.id, 'view']">{{ alunoRef.mentor?.id }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

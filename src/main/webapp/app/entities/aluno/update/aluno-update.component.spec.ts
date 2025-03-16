@@ -4,6 +4,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, from, of } from 'rxjs';
 
+import { IMentor } from 'app/entities/mentor/mentor.model';
+import { MentorService } from 'app/entities/mentor/service/mentor.service';
 import { AlunoService } from '../service/aluno.service';
 import { IAluno } from '../aluno.model';
 import { AlunoFormService } from './aluno-form.service';
@@ -16,6 +18,7 @@ describe('Aluno Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let alunoFormService: AlunoFormService;
   let alunoService: AlunoService;
+  let mentorService: MentorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,17 +41,43 @@ describe('Aluno Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     alunoFormService = TestBed.inject(AlunoFormService);
     alunoService = TestBed.inject(AlunoService);
+    mentorService = TestBed.inject(MentorService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should update editForm', () => {
+    it('Should call Mentor query and add missing value', () => {
       const aluno: IAluno = { id: 9303 };
+      const mentor: IMentor = { id: 15712 };
+      aluno.mentor = mentor;
+
+      const mentorCollection: IMentor[] = [{ id: 15712 }];
+      jest.spyOn(mentorService, 'query').mockReturnValue(of(new HttpResponse({ body: mentorCollection })));
+      const additionalMentors = [mentor];
+      const expectedCollection: IMentor[] = [...additionalMentors, ...mentorCollection];
+      jest.spyOn(mentorService, 'addMentorToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ aluno });
       comp.ngOnInit();
 
+      expect(mentorService.query).toHaveBeenCalled();
+      expect(mentorService.addMentorToCollectionIfMissing).toHaveBeenCalledWith(
+        mentorCollection,
+        ...additionalMentors.map(expect.objectContaining),
+      );
+      expect(comp.mentorsSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const aluno: IAluno = { id: 9303 };
+      const mentor: IMentor = { id: 15712 };
+      aluno.mentor = mentor;
+
+      activatedRoute.data = of({ aluno });
+      comp.ngOnInit();
+
+      expect(comp.mentorsSharedCollection).toContainEqual(mentor);
       expect(comp.aluno).toEqual(aluno);
     });
   });
@@ -118,6 +147,18 @@ describe('Aluno Management Update Component', () => {
       expect(alunoService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareMentor', () => {
+      it('Should forward to mentorService', () => {
+        const entity = { id: 15712 };
+        const entity2 = { id: 17473 };
+        jest.spyOn(mentorService, 'compareMentor');
+        comp.compareMentor(entity, entity2);
+        expect(mentorService.compareMentor).toHaveBeenCalledWith(entity, entity2);
+      });
     });
   });
 });

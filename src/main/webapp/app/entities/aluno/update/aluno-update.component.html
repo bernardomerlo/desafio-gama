@@ -27,6 +27,23 @@
             </div>
           }
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_mentor" jhiTranslate="gamaApp.aluno.mentor">Mentor</label>
+          <select
+            class="form-control"
+            id="field_mentor"
+            data-cy="mentor"
+            name="mentor"
+            formControlName="mentor"
+            [compareWith]="compareMentor"
+          >
+            <option [ngValue]="null"></option>
+            @for (mentorOption of mentorsSharedCollection; track $index) {
+              <option [ngValue]="mentorOption">{{ mentorOption.id }}</option>
+            }
+          </select>
+        </div>
       </div>
 
       <div>

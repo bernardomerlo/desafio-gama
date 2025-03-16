@@ -9,7 +9,8 @@
         "main": "Entidades",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
         "aluno": "Aluno",
-        "meta": "Meta"
+        "meta": "Meta",
+        "mentor": "Mentor"
       },
       "account": {
         "main": "Conta",

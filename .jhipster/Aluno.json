@@ -19,6 +19,13 @@
       "relationshipName": "meta",
       "relationshipSide": "left",
       "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "mentor",
+      "otherEntityRelationshipName": "aluno",
+      "relationshipName": "mentor",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
     }
   ],
   "searchEngine": "no"

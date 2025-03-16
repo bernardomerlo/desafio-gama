@@ -31,6 +31,10 @@ public class Aluno implements Serializable {
     @JsonIgnoreProperties(value = { "aluno" }, allowSetters = true)
     private Set<Meta> metas = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "alunos" }, allowSetters = true)
+    private Mentor mentor;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -87,6 +91,19 @@ public class Aluno implements Serializable {
     public Aluno removeMeta(Meta meta) {
         this.metas.remove(meta);
         meta.setAluno(null);
+        return this;
+    }
+
+    public Mentor getMentor() {
+        return this.mentor;
+    }
+
+    public void setMentor(Mentor mentor) {
+        this.mentor = mentor;
+    }
+
+    public Aluno mentor(Mentor mentor) {
+        this.setMentor(mentor);
         return this;
     }
 

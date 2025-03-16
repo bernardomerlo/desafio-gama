@@ -57,6 +57,8 @@ public class AlunoAsserts {
      * @param actual the actual entity
      */
     public static void assertAlunoUpdatableRelationshipsEquals(Aluno expected, Aluno actual) {
-        // empty method
+        assertThat(actual)
+            .as("Verify Aluno relationships")
+            .satisfies(a -> assertThat(a.getMentor()).as("check mentor").isEqualTo(expected.getMentor()));
     }
 }

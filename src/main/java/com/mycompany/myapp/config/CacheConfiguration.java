@@ -44,6 +44,8 @@ public class CacheConfiguration {
             createCache(cm, com.mycompany.myapp.domain.Aluno.class.getName());
             createCache(cm, com.mycompany.myapp.domain.Aluno.class.getName() + ".metas");
             createCache(cm, com.mycompany.myapp.domain.Meta.class.getName());
+            createCache(cm, com.mycompany.myapp.domain.Mentor.class.getName());
+            createCache(cm, com.mycompany.myapp.domain.Mentor.class.getName() + ".alunos");
             // jhipster-needle-ehcache-add-entry
         };
     }

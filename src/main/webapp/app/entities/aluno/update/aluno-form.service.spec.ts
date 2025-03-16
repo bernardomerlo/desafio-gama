@@ -21,6 +21,7 @@ describe('Aluno Form Service', () => {
           expect.objectContaining({
             id: expect.any(Object),
             nome: expect.any(Object),
+            mentor: expect.any(Object),
           }),
         );
       });
@@ -32,6 +33,7 @@ describe('Aluno Form Service', () => {
           expect.objectContaining({
             id: expect.any(Object),
             nome: expect.any(Object),
+            mentor: expect.any(Object),
           }),
         );
       });

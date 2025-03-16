@@ -19,7 +19,8 @@
       },
       "id": "ID",
       "nome": "Nome",
-      "meta": "Meta"
+      "meta": "Meta",
+      "mentor": "Mentor"
     }
   }
 }

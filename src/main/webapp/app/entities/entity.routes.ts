@@ -16,6 +16,11 @@ const routes: Routes = [
     data: { pageTitle: 'gamaApp.meta.home.title' },
     loadChildren: () => import('./meta/meta.routes'),
   },
+  {
+    path: 'mentor',
+    data: { pageTitle: 'gamaApp.mentor.home.title' },
+    loadChildren: () => import('./mentor/mentor.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

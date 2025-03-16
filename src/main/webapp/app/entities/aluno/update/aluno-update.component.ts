@@ -2,11 +2,13 @@ import { Component, OnInit, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { IMentor } from 'app/entities/mentor/mentor.model';
+import { MentorService } from 'app/entities/mentor/service/mentor.service';
 import { IAluno } from '../aluno.model';
 import { AlunoService } from '../service/aluno.service';
 import { AlunoFormGroup, AlunoFormService } from './aluno-form.service';
@@ -20,12 +22,17 @@ export class AlunoUpdateComponent implements OnInit {
   isSaving = false;
   aluno: IAluno | null = null;
 
+  mentorsSharedCollection: IMentor[] = [];
+
   protected alunoService = inject(AlunoService);
   protected alunoFormService = inject(AlunoFormService);
+  protected mentorService = inject(MentorService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: AlunoFormGroup = this.alunoFormService.createAlunoFormGroup();
+
+  compareMentor = (o1: IMentor | null, o2: IMentor | null): boolean => this.mentorService.compareMentor(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ aluno }) => {
@@ -33,6 +40,8 @@ export class AlunoUpdateComponent implements OnInit {
       if (aluno) {
         this.updateForm(aluno);
       }
+
+      this.loadRelationshipsOptions();
     });
   }
 
@@ -72,5 +81,15 @@ export class AlunoUpdateComponent implements OnInit {
   protected updateForm(aluno: IAluno): void {
     this.aluno = aluno;
     this.alunoFormService.resetForm(this.editForm, aluno);
+
+    this.mentorsSharedCollection = this.mentorService.addMentorToCollectionIfMissing<IMentor>(this.mentorsSharedCollection, aluno.mentor);
+  }
+
+  protected loadRelationshipsOptions(): void {
+    this.mentorService
+      .query()
+      .pipe(map((res: HttpResponse<IMentor[]>) => res.body ?? []))
+      .pipe(map((mentors: IMentor[]) => this.mentorService.addMentorToCollectionIfMissing<IMentor>(mentors, this.aluno?.mentor)))
+      .subscribe((mentors: IMentor[]) => (this.mentorsSharedCollection = mentors));
   }
 }

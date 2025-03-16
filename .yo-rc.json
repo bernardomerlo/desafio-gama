@@ -13,7 +13,7 @@
     "devDatabaseType": "postgresql",
     "enableHibernateCache": false,
     "enableTranslation": true,
-    "entities": ["Aluno", "Meta"],
+    "entities": ["Aluno", "Meta", "Mentor"],
     "feignClient": null,
     "jhipsterVersion": "8.9.0",
     "jwtSecretKey": "YjRkNWEyNzcyYzhhMWFkYmQ0OTA1NmVkNDA4NmM3ZTM2ZDNlZTY2NDk2OWFhODMwMDVmMDU5OTcxZWI2YWVlMmViYmZkOTZlZGY3YzhlZTk5MzU0Nzg4NGY3NjRiNzNmZTNjZWQyN2M0YTc4NjE0MjE4ZDZmMzQzZGEwZDQzZTI=",

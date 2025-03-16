@@ -17,6 +17,9 @@
             <column name="nome" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
+            <column name="mentor_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>
