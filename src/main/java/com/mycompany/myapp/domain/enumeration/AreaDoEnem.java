@@ -1,7 +1,7 @@
 package com.mycompany.myapp.domain.enumeration;
 
 /**
- * JDL para cadastro de Aluno e suas Metas.
+ * The AreaDoEnem enumeration.
  */
 public enum AreaDoEnem {
     LINGUAGENS,

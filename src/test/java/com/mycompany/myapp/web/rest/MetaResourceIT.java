@@ -33,8 +33,8 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class MetaResourceIT {
 
-    private static final Integer DEFAULT_VALOR = 1;
-    private static final Integer UPDATED_VALOR = 2;
+    private static final Integer DEFAULT_VALOR = 0;
+    private static final Integer UPDATED_VALOR = 1;
 
     private static final AreaDoEnem DEFAULT_AREA = AreaDoEnem.LINGUAGENS;
     private static final AreaDoEnem UPDATED_AREA = AreaDoEnem.CIENCIAS_HUMANAS;

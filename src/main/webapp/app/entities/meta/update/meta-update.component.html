@@ -24,6 +24,16 @@
               @if (editForm.get('valor')?.errors?.required) {
                 <small class="form-text text-danger" jhiTranslate="entity.validation.required">O campo é obrigatório.</small>
               }
+              @if (editForm.get('valor')?.errors?.min) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.min" [translateValues]="{ min: '0' }"
+                  >Este campo deve ser maior que 0.</small
+                >
+              }
+              @if (editForm.get('valor')?.errors?.max) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.max" [translateValues]="{ max: '1000' }"
+                  >Este campo não pode ser maior que 1000.</small
+                >
+              }
               <small class="form-text text-danger" [hidden]="!editForm.get('valor')?.errors?.number" jhiTranslate="entity.validation.number"
                 >Este campo é do tipo numérico.</small
               >

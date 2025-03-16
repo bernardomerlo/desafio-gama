@@ -23,6 +23,8 @@ public class Meta implements Serializable {
     private Long id;
 
     @NotNull
+    @Min(value = 0)
+    @Max(value = 1000)
     @Column(name = "valor", nullable = false)
     private Integer valor;
 

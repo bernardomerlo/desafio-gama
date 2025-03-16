@@ -41,7 +41,7 @@ export class MetaFormService {
         },
       ),
       valor: new FormControl(metaRawValue.valor, {
-        validators: [Validators.required],
+        validators: [Validators.required, Validators.min(0), Validators.max(1000)],
       }),
       area: new FormControl(metaRawValue.area, {
         validators: [Validators.required],

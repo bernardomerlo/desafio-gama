@@ -13,7 +13,7 @@ entity Aluno {
 
 // Meta
 entity Meta {
-  valor Integer required
+  valor Integer required min(0) max(1000)
   area AreaDoEnem required
 }
 
