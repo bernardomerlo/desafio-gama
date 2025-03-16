@@ -6,6 +6,8 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * A Mentor.
@@ -26,6 +28,14 @@ public class Mentor implements Serializable {
     @NotNull
     @Column(name = "nome", nullable = false)
     private String nome;
+
+    @NotNull
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(unique = true)
+    private User user;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "mentor")
     @JsonIgnoreProperties(value = { "metas", "mentor" }, allowSetters = true)
@@ -57,6 +67,32 @@ public class Mentor implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public Mentor email(String email) {
+        this.setEmail(email);
+        return this;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public User getUser() {
+        return this.user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Mentor user(User user) {
+        this.setUser(user);
+        return this;
     }
 
     public Set<Aluno> getAlunos() {
@@ -115,6 +151,7 @@ public class Mentor implements Serializable {
         return "Mentor{" +
             "id=" + getId() +
             ", nome='" + getNome() + "'" +
+            ", email='" + getEmail() + "'" +
             "}";
     }
 }

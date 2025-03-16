@@ -19,6 +19,7 @@ entity Meta {
 
 entity Mentor{
   nome String required
+  email String required
 }
 
 // Um Aluno pode ter muitas Metas
@@ -29,6 +30,11 @@ relationship OneToMany {
 relationship OneToMany {
   Mentor{aluno} to Aluno{mentor}
 }
+
+relationship OneToOne {
+  Mentor to User with builtInEntity
+}
+
 // Opções gerais
 paginate Aluno with pagination
 paginate Meta with pagination

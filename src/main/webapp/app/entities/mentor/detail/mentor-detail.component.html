@@ -19,6 +19,14 @@
           <dd>
             <span>{{ mentorRef.nome }}</span>
           </dd>
+          <dt><span jhiTranslate="gamaApp.mentor.email">Email</span></dt>
+          <dd>
+            <span>{{ mentorRef.email }}</span>
+          </dd>
+          <dt><span jhiTranslate="gamaApp.mentor.user">User</span></dt>
+          <dd>
+            <span>{{ mentorRef.user?.id }}</span>
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

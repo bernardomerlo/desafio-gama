@@ -19,6 +19,8 @@ type MentorFormDefaults = Pick<NewMentor, 'id'>;
 type MentorFormGroupContent = {
   id: FormControl<IMentor['id'] | NewMentor['id']>;
   nome: FormControl<IMentor['nome']>;
+  email: FormControl<IMentor['email']>;
+  user: FormControl<IMentor['user']>;
 };
 
 export type MentorFormGroup = FormGroup<MentorFormGroupContent>;
@@ -41,6 +43,10 @@ export class MentorFormService {
       nome: new FormControl(mentorRawValue.nome, {
         validators: [Validators.required],
       }),
+      email: new FormControl(mentorRawValue.email, {
+        validators: [Validators.required],
+      }),
+      user: new FormControl(mentorRawValue.user),
     });
   }
 

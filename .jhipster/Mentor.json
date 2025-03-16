@@ -8,11 +8,24 @@
       "fieldName": "nome",
       "fieldType": "String",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
     }
   ],
   "name": "Mentor",
   "pagination": "pagination",
   "relationships": [
+    {
+      "otherEntityName": "user",
+      "otherEntityRelationshipName": "mentor",
+      "relationshipName": "user",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one",
+      "relationshipWithBuiltInEntity": true
+    },
     {
       "otherEntityName": "aluno",
       "otherEntityRelationshipName": "mentor",

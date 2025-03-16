@@ -2,8 +2,10 @@ package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.config.Constants;
 import com.mycompany.myapp.domain.Authority;
+import com.mycompany.myapp.domain.Mentor;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.AuthorityRepository;
+import com.mycompany.myapp.repository.MentorRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.security.AuthoritiesConstants;
 import com.mycompany.myapp.security.SecurityUtils;
@@ -41,16 +43,20 @@ public class UserService {
 
     private final CacheManager cacheManager;
 
+    private final MentorRepository mentorRepository;
+
     public UserService(
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
-        CacheManager cacheManager
+        CacheManager cacheManager,
+        MentorRepository mentorRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.mentorRepository = mentorRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -159,8 +165,19 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
-        user.setPassword(encryptedPassword);
+
+        if (userDTO.getAuthorities() != null && userDTO.getAuthorities().contains(AuthoritiesConstants.MENTOR)) {
+            user.setPassword(passwordEncoder.encode("1111"));
+            Mentor mentor = new Mentor();
+            mentor.setUser(user);
+            mentor.setNome(userDTO.getFirstName());
+            mentor.setEmail(userDTO.getEmail());
+            mentorRepository.save(mentor);
+        } else {
+            String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+            user.setPassword(encryptedPassword);
+        }
+
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
@@ -222,6 +239,14 @@ public class UserService {
         userRepository
             .findOneByLogin(login)
             .ifPresent(user -> {
+                LOG.debug("user deleted: {}", user);
+                if (
+                    user.getAuthorities() != null &&
+                    user.getAuthorities().stream().anyMatch(authority -> authority.getName().equals(AuthoritiesConstants.MENTOR))
+                ) {
+                    Mentor mentor = mentorRepository.findByUserId(user.getId());
+                    mentorRepository.delete(mentor);
+                }
                 userRepository.delete(user);
                 this.clearUserCaches(user);
                 LOG.debug("Deleted User: {}", user);

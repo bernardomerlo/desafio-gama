@@ -131,6 +131,9 @@ public class MentorResource {
                 if (mentor.getNome() != null) {
                     existingMentor.setNome(mentor.getNome());
                 }
+                if (mentor.getEmail() != null) {
+                    existingMentor.setEmail(mentor.getEmail());
+                }
 
                 return existingMentor;
             })

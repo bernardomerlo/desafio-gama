@@ -32,7 +32,7 @@ public class Aluno implements Serializable {
     private Set<Meta> metas = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "alunos" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "alunos" }, allowSetters = true)
     private Mentor mentor;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

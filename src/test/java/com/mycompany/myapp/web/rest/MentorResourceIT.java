@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Mentor;
 import com.mycompany.myapp.repository.MentorRepository;
+import com.mycompany.myapp.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -35,6 +36,9 @@ class MentorResourceIT {
     private static final String DEFAULT_NOME = "AAAAAAAAAA";
     private static final String UPDATED_NOME = "BBBBBBBBBB";
 
+    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
+    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/mentors";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -46,6 +50,9 @@ class MentorResourceIT {
 
     @Autowired
     private MentorRepository mentorRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private EntityManager em;
@@ -64,7 +71,7 @@ class MentorResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Mentor createEntity() {
-        return new Mentor().nome(DEFAULT_NOME);
+        return new Mentor().nome(DEFAULT_NOME).email(DEFAULT_EMAIL);
     }
 
     /**
@@ -74,7 +81,7 @@ class MentorResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Mentor createUpdatedEntity() {
-        return new Mentor().nome(UPDATED_NOME);
+        return new Mentor().nome(UPDATED_NOME).email(UPDATED_EMAIL);
     }
 
     @BeforeEach
@@ -147,6 +154,22 @@ class MentorResourceIT {
 
     @Test
     @Transactional
+    void checkEmailIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        mentor.setEmail(null);
+
+        // Create the Mentor, which fails.
+
+        restMentorMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(mentor)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllMentors() throws Exception {
         // Initialize the database
         insertedMentor = mentorRepository.saveAndFlush(mentor);
@@ -157,7 +180,8 @@ class MentorResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(mentor.getId().intValue())))
-            .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME)));
+            .andExpect(jsonPath("$.[*].nome").value(hasItem(DEFAULT_NOME)))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)));
     }
 
     @Test
@@ -172,7 +196,8 @@ class MentorResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(mentor.getId().intValue()))
-            .andExpect(jsonPath("$.nome").value(DEFAULT_NOME));
+            .andExpect(jsonPath("$.nome").value(DEFAULT_NOME))
+            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL));
     }
 
     @Test
@@ -194,7 +219,7 @@ class MentorResourceIT {
         Mentor updatedMentor = mentorRepository.findById(mentor.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedMentor are not directly saved in db
         em.detach(updatedMentor);
-        updatedMentor.nome(UPDATED_NOME);
+        updatedMentor.nome(UPDATED_NOME).email(UPDATED_EMAIL);
 
         restMentorMockMvc
             .perform(
@@ -270,6 +295,8 @@ class MentorResourceIT {
         Mentor partialUpdatedMentor = new Mentor();
         partialUpdatedMentor.setId(mentor.getId());
 
+        partialUpdatedMentor.email(UPDATED_EMAIL);
+
         restMentorMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedMentor.getId())
@@ -296,7 +323,7 @@ class MentorResourceIT {
         Mentor partialUpdatedMentor = new Mentor();
         partialUpdatedMentor.setId(mentor.getId());
 
-        partialUpdatedMentor.nome(UPDATED_NOME);
+        partialUpdatedMentor.nome(UPDATED_NOME).email(UPDATED_EMAIL);
 
         restMentorMockMvc
             .perform(
